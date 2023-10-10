@@ -5,6 +5,7 @@
 Aside from English, what language is most common for films? Answer this with a single SQL query.
 
 ```{r}
+setwd("/Users/dalaohuhan/Downloads")
 library(DBI)
 library(RSQLite)
 sakila <- dbConnect(RSQLite::SQLite(),
@@ -113,7 +114,9 @@ Produce a histogram of the log of the apartment numbers for all addresses. (You 
 
 ```{r}
 library(stringr)
+#extract the number after # 
 address1 <- str_extract(us500$address, "(?<=#)\\d+$") 
+#extract the numbers with Spaces on both sides from the rest of the address
 address2 <- str_extract(us500$address[is.na(address1)],
                         "(?<!^)(?<=[:alpha:] )\\d+\\b")
 ap1 <- as.numeric(address1)
@@ -134,15 +137,20 @@ expected_freq <- log10(1 + 1 / (1:9))
 chisq.test(ap_freq, p = expected_freq)
 ```
 
+
+
 # f
 
 Repeat your analysis of Benford's law on the last digit of the street number. (E.g. if your address is "123 Main St #25", your street number is "123".)
 
 ```{r}
+#extract the first few numbers in the address
 street <-gsub(".*?(\\d+).*", "\\1", us500$address)
 street_num <- as.numeric(street)
+#extract the last digit of the street
 street_last_dig <- as.numeric(substring(street_num, 
                                         nchar(street_num) - 0, nchar(street_num)))
+#delect 0
 last_not_0_digit <- street_last_dig[street_last_dig !=0]
 street_freq <- table(last_not_0_digit)
 expected_freq <- log10(1 + 1 / (1:9))
